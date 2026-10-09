@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<title>IPU Selangor | Makluman dalaman CIAST</title>
+<style>
+  :root {
+    --bg: #F6F3EC;
+    --panel: #FFFFFF;
+    --fg: #1F1E1B;
+    --muted: #6A665E;
+    --line: #DFDACE;
+    --track: #ECE8DE;
+    --alert-bg: #FFF1CC;
+    --alert-line: #C99700;
+    --b1: #3B82C4;
+    --b2: #2E9E63;
+    --b3: #E5B80B;
+    --b4: #E0641E;
+    --b5: #BE2540;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --radius: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161614;
+      --panel: #201F1D;
+      --fg: #F2EFE8;
+      --muted: #A8A399;
+      --line: #36342F;
+      --track: #2C2A26;
+      --alert-bg: #3A300F;
+      --alert-line: #E5B80B;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  @media (min-width: 720px) { .wrap { padding: 32px 28px 56px; gap: 20px; } }
+  h1, h2, p { margin: 0; }
+  .head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px; }
+  .kicker { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 7vw, 48px); line-height: 1.1; }
+  .stamp { color: var(--muted); font-size: 14px; }
+  .alert {
+    padding: 12px 14px;
+    border: 1px solid var(--alert-line);
+    border-left-width: 6px;
+    border-radius: var(--radius);
+    background: var(--alert-bg);
+    font-size: 15px;
+  }
+  .alert a { color: inherit; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    min-width: 0;
+  }
+  @media (min-width: 720px) { .card { padding: 22px; } }
+  .card h2 { font-size: 17px; font-weight: 600; }
+  .note { margin: 4px 0 14px; color: var(--muted); font-size: 13px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 16px; }
+  @media (min-width: 720px) { .grid { gap: 20px; } }
+
+  /* focus station */
+  .focus { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 20px 32px; align-items: end; }
+  .label { color: var(--muted); font-size: 13px; }
+  .focus-name { font-size: 20px; font-weight: 600; }
+  .focus-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; margin-top: 2px; }
+  .focus-num { font-family: var(--serif); font-size: clamp(72px, 20vw, 104px); line-height: 1; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-size: 16px;
+    font-weight: 600;
+    background: color-mix(in srgb, var(--band, transparent) 18%, transparent);
+  }
+  .dot { flex: none; width: 12px; height: 12px; border-radius: 3px; background: var(--band); }
+  .delta { margin-top: 8px; font-size: 14px; color: var(--muted); min-height: 1.45em; }
+  .trend-box { position: relative; }
+  .trend { display: flex; align-items: flex-end; gap: 2px; height: 110px; border-bottom: 1px solid var(--line); }
+  .trend-col {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: default;
+  }
+  .trend-col[data-jam] { cursor: pointer; }
+  .trend-bar { width: 100%; border-radius: 3px 3px 0 0; background: var(--band); }
+  .trend-col[aria-pressed="true"] .trend-bar { outline: 2px solid var(--fg); outline-offset: 1px; }
+  .trend-col:focus-visible { outline: 2px solid var(--fg); outline-offset: 1px; }
+  .trend-axis { display: flex; justify-content: space-between; margin-top: 4px; color: var(--muted); font-size: 12px; }
+  .take { font-size: 16px; max-width: 46rem; }
+  .take b { font-weight: 600; }
+
+  /* controls */
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+  .field { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
+  select, .btn {
+    font: inherit;
+    font-size: 15px;
+    color: var(--fg);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 12px;
+    min-height: 40px;
+  }
+  .btn { cursor: pointer; font-weight: 500; }
+  .btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn:focus-visible, select:focus-visible, .bar-row:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+  /* station bars */
+  .chart { position: relative; }
+  .bars { display: flex; flex-direction: column; gap: 6px; }
+  .bar-row, .axis { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 2.75rem; align-items: center; column-gap: 10px; }
+  .bar-row { border-radius: 8px; }
+  .bar-row.is-focus .bar-name { text-decoration: underline; text-underline-offset: 3px; }
+  .bar-name { display: block; font-weight: 500; line-height: 1.25; }
+  .bar-status { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; line-height: 1.3; }
+  .bar-status .dot { width: 10px; height: 10px; border-radius: 2px; }
+  .track { position: relative; height: 36px; }
+  .tick { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .bar { position: absolute; left: 0; top: 50%; height: 14px; margin-top: -7px; border-radius: 0 4px 4px 0; background: var(--band); }
+  .bar-row:hover .bar, .bar-row:focus-visible .bar { outline: 2px solid var(--fg); outline-offset: 1px; }
+  .bar-val { text-align: right; font-size: 18px; font-weight: 600; }
+  .axis { margin-top: 4px; }
+  .axis-line { position: relative; height: 22px; border-top: 1px solid var(--line); }
+  .axis-label { position: absolute; top: 4px; transform: translateX(-50%); color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .axis-label:first-child { transform: none; }
+  .tip {
+    position: absolute;
+    z-index: 2;
+    max-width: 16rem;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
+    font-size: 13px;
+    pointer-events: none;
+  }
+  .tip-head { color: var(--muted); }
+
+  /* slot table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+  thead th { color: var(--muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
+  tbody th { font-weight: 400; }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+  th:first-child { padding-left: 0; }
+  .place { display: block; color: var(--muted); font-size: 12px; line-height: 1.3; }
+  .cell {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 4.5rem;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border-left: 4px solid var(--band);
+    background: color-mix(in srgb, var(--band) 16%, transparent);
+  }
+  .cell-val { font-size: 17px; font-weight: 600; line-height: 1.2; }
+  .cell-status { font-size: 12px; line-height: 1.25; }
+  .none { color: var(--muted); }
+  @media (max-width: 480px) {
+    th, td { padding: 6px 4px; }
+    .place { display: none; }
+    .cell { min-width: 3.5rem; padding: 4px 6px; }
+    .cell-status { font-size: 11px; }
+  }
+
+  /* share */
+  .poster-wrap { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px; }
+  .poster { flex: 0 1 18rem; min-width: 0; aspect-ratio: 4 / 5; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--track); }
+  .poster img { display: block; width: 100%; height: auto; }
+  .side { flex: 1 1 12rem; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .msg { color: var(--muted); font-size: 13px; min-height: 1.3em; }
+  .share-text {
+    margin: 0;
+    padding: 14px;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; font-size: 13px; }
+  .legend li { display: flex; align-items: center; gap: 6px; }
+  .legend .range { color: var(--muted); }
+  .foot { color: var(--muted); font-size: 13px; }
+  .foot a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div>
+      <p class="kicker">Makluman dalaman CIAST</p>
+      <h1>IPU Selangor</h1>
+    </div>
+    <p class="stamp" id="stamp">Memuatkan bacaan…</p>
+  </header>
+
+  <div class="alert" id="alert" role="status" hidden></div>
+
+  <section class="card focus" id="fokus" aria-label="Stesen tumpuan">
+    <div>
+      <p class="label" id="focus-when">&nbsp;</p>
+      <p class="focus-name" id="focus-name">Shah Alam</p>
+      <div class="focus-row">
+        <span class="focus-num" id="focus-num">–</span>
+        <span class="chip" id="focus-chip" hidden><span class="dot"></span><span id="focus-status"></span></span>
+      </div>
+      <p class="delta" id="focus-delta"></p>
+    </div>
+    <div class="trend-box" id="trend-box">
+      <p class="label" id="trend-label">Setiap jam</p>
+      <div class="trend" id="trend" role="group" aria-label="Bacaan setiap jam di stesen tumpuan"></div>
+      <div class="trend-axis" aria-hidden="true"><span>12 mlm</span><span>6 pg</span><span>12 tgh</span><span>6 ptg</span><span>11 mlm</span></div>
+    </div>
+  </section>
+
+  <p class="take" id="take"></p>
+
+  <div class="controls">
+    <label class="field">Tarikh <select id="date" aria-label="Tarikh bacaan"></select></label>
+    <label class="field">Waktu <select id="hour" aria-label="Waktu bacaan"></select></label>
+    <button class="btn" id="latest" type="button">Terkini</button>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Bacaan mengikut stesen</h2>
+      <p class="note">IPU setiap stesen pada waktu yang dipilih, dari tertinggi. Garis menegak menanda sempadan kategori.</p>
+      <div class="chart" id="chart"></div>
+    </section>
+    <section class="card">
+      <h2>Tiga slot sehari</h2>
+      <p class="note">Bacaan 9:00 pagi, 12:00 tengah hari dan 5:00 petang bagi tarikh yang dipilih. Slot kosong bermaksud bacaan belum direkod.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Stesen</th><th scope="col">9 pagi</th><th scope="col">12 tgh hari</th><th scope="col">5 petang</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Grafik untuk dikongsi</h2>
+      <p class="note">Gambar bagi waktu yang dipilih, sedia untuk WhatsApp.</p>
+      <div class="poster-wrap">
+        <div class="poster" id="poster"></div>
+        <div class="side">
+          <button class="btn primary" id="share-img" type="button" hidden>Kongsi gambar</button>
+          <button class="btn" id="dl-img" type="button">Muat turun gambar</button>
+          <button class="btn" id="copy-img" type="button">Salin gambar</button>
+          <span class="msg" id="img-msg" role="status"></span>
+        </div>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Teks untuk dikongsi</h2>
+      <p class="note">Ringkasan waktu yang dipilih. Tanda bintang menjadikan tajuk tebal dalam WhatsApp.</p>
+      <pre class="share-text" id="share-text">–</pre>
+      <div class="row">
+        <button class="btn" id="copy-text" type="button">Salin teks</button>
+        <span class="msg" id="text-msg" role="status"></span>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <ul class="legend" id="legend" aria-label="Kategori IPU"></ul>
+    <p class="foot" style="margin-top: 12px">Sumber: <a href="https://eqms.doe.gov.my/APIMS/main" rel="noopener">APIMS, Jabatan Alam Sekitar Malaysia</a>. Bacaan disalin setiap jam bagi enam stesen di Selangor, termasuk stesen bergerak Johan Setia. Ini bukan laman rasmi Jabatan Alam Sekitar; untuk bacaan semasa yang muktamad, rujuk APIMS.</p>
+  </footer>
+</div>
+
+<script src="poster.js"></script>
+<script>
+(function () {
+  'use strict';
+  var DATA_URL = 'data/ipu_selangor.json';
+  var FOCUS = 'CA20B'; // stesen tumpuan: Shah Alam
+  var REFRESH_MS = 5 * 60 * 1000;
+  var STALE_MS = 3 * 60 * 60 * 1000;
+  var BANDS = [
+    { max: 50, label: 'Baik', range: '0–50', color: 'var(--b1)' },
+    { max: 100, label: 'Sederhana', range: '51–100', color: 'var(--b2)' },
+    { max: 200, label: 'Tidak Sihat', range: '101–200', color: 'var(--b3)' },
+    { max: 300, label: 'Sangat Tidak Sihat', range: '201–300', color: 'var(--b4)' },
+    { max: Infinity, label: 'Berbahaya', range: 'lebih 300', color: 'var(--b5)' }
+  ];
+  var SLOTS = ['09:00', '12:00', '17:00'];
+  var BULAN = ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis'];
+  var HARI = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+  var SAVE_HINT = 'Tekan lama atau klik kanan pada gambar untuk simpan.';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var bandOf = function (v) { return BANDS.find(function (b) { return v <= b.max; }); };
+  var el = function (tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  var fmtDate = function (s, withDay) {
+    var d = new Date(s + 'T00:00:00Z');
+    if (isNaN(d)) return s;
+    var base = d.getUTCDate() + ' ' + BULAN[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+    return withDay ? HARI[d.getUTCDay()] + ', ' + base : base;
+  };
+  var hourLabel = function (jam) {
+    var h = Number(jam.slice(0, 2));
+    var h12 = h % 12 === 0 ? 12 : h % 12;
+    var part = h === 0 ? 'tengah malam' : h < 12 ? 'pagi' : h < 14 ? 'tengah hari' : h < 19 ? 'petang' : 'malam';
+    return h12 + ':00 ' + part;
+  };
+  var stamp = function (r) { return Date.parse(r.tarikh + 'T' + r.jam + ':00+08:00'); };
+  var setBand = function (node, v) { node.style.setProperty('--band', bandOf(v).color); };
+
+  var state = { rows: [], status: 'loading' };
+  var pick = { tarikh: null, jam: null }; // null ikut bacaan terkini
+  var poster = { key: '', name: '', ready: false, text: '' };
+  var posterCanvas = document.createElement('canvas');
+  var canShareFiles = false;
+  try {
+    var probe = new File([new Blob(['x'], { type: 'image/png' })], 'x.png', { type: 'image/png' });
+    canShareFiles = !!(navigator.canShare && navigator.canShare({ files: [probe] }));
+  } catch (e) { canShareFiles = false; }
+  $('share-img').hidden = !canShareFiles;
+
+  BANDS.forEach(function (b) {
+    var li = el('li');
+    var dot = el('span', 'dot');
+    dot.style.setProperty('--band', b.color);
+    li.append(dot, el('span', null, b.label), el('span', 'range', b.range));
+    $('legend').append(li);
+  });
+
+  function load() {
+    return fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (json) {
+        var rows = (Array.isArray(json) ? json : json.rows || []).map(function (r) {
+          return Object.assign({}, r, { ipu: Number(r.ipu), jam: r.jam || r.slot });
+        }).filter(function (r) { return r.tarikh && r.jam && isFinite(r.ipu); });
+        state = { rows: rows, status: 'ok' };
+      })
+      .catch(function () {
+        state = { rows: state.rows, status: state.rows.length ? 'ok' : 'error' };
+      })
+      .then(draw);
+  }
+
+  // tooltip shared by the two charts
+  function attachTip(box, node, build) {
+    var tip = box.querySelector('.tip');
+    if (!tip) {
+      tip = el('div', 'tip');
+      tip.hidden = true;
+      box.append(tip);
+    }
+    var show = function (event) {
+      tip.replaceChildren.apply(tip, build());
+      tip.hidden = false;
+      var b = box.getBoundingClientRect();
+      var n = node.getBoundingClientRect();
+      var x = event && event.clientX != null ? event.clientX - b.left + 12 : n.left - b.left;
+      x = Math.max(0, Math.min(x, b.width - tip.offsetWidth));
+      var y = n.top - b.top - tip.offsetHeight - 6;
+      if (y < 0) y = n.bottom - b.top + 6;
+      tip.style.left = x + 'px';
+      tip.style.top = y + 'px';
+    };
+    var hide = function () { tip.hidden = true; };
+    node.addEventListener('mousemove', show);
+    node.addEventListener('mouseleave', hide);
+    node.addEventListener('focus', function () { show(null); });
+    node.addEventListener('blur', hide);
+  }
+  var tipLines = function (r, withPlace) {
+    var b = bandOf(r.ipu);
+    var line = el('div');
+    line.style.display = 'flex';
+    line.style.alignItems = 'center';
+    line.style.gap = '6px';
+    var dot = el('span', 'dot');
+    dot.style.setProperty('--band', b.color);
+    line.append(dot, el('span', null, 'IPU ' + r.ipu + ' · ' + r.status));
+    var head = el('div', 'tip-head', withPlace ? r.stesen + ' · ' + r.tempat : hourLabel(r.jam));
+    var out = [head, line];
+    if (r.pencemar) out.push(el('div', null, 'Pencemar dominan: ' + r.pencemar));
+    return out;
+  };
+
+  function drawFocus(rows, tarikh, jam) {
+    var dayRows = rows.filter(function (r) { return r.stesen_id === FOCUS && r.tarikh === tarikh; });
+    var now = dayRows.find(function (r) { return r.jam === jam; });
+    var any = rows.find(function (r) { return r.stesen_id === FOCUS; });
+    $('focus-name').textContent = any ? any.stesen + ' (' + any.tempat + ')' : 'Shah Alam';
+    $('focus-when').textContent = fmtDate(tarikh, true) + ', ' + hourLabel(jam);
+    if (now) {
+      $('focus-num').textContent = String(now.ipu);
+      $('focus-status').textContent = now.status;
+      setBand($('focus-chip'), now.ipu);
+      $('focus-chip').hidden = false;
+      var prevTs = stamp(now) - 3600000;
+      var prev = rows.find(function (r) { return r.stesen_id === FOCUS && stamp(r) === prevTs; });
+      if (prev) {
+        var d = now.ipu - prev.ipu;
+        $('focus-delta').textContent = (d > 0 ? 'Naik ' + d : d < 0 ? 'Turun ' + Math.abs(d) : 'Tiada perubahan') +
+          ' berbanding ' + hourLabel(prev.jam) + ' (' + prev.ipu + ').';
+      } else {
+        $('focus-delta').textContent = '';
+      }
+    } else {
+      $('focus-num').textContent = '–';
+      $('focus-chip').hidden = true;
+      $('focus-delta').textContent = 'Tiada bacaan stesen ini pada waktu yang dipilih.';
+    }
+
+    $('trend-label').textContent = 'Setiap jam, ' + fmtDate(tarikh, false);
+    var maxVal = Math.max.apply(null, dayRows.map(function (r) { return r.ipu; }).concat([0]));
+    var top = maxVal <= 300 ? 300 : Math.ceil(maxVal / 100) * 100;
+    var box = $('trend-box');
+    var cols = [];
+    for (var h = 0; h < 24; h++) {
+      var key = (h < 10 ? '0' : '') + h + ':00';
+      var r = dayRows.find(function (x) { return x.jam === key; });
+      var col = el(r ? 'button' : 'span', 'trend-col');
+      if (r) {
+        col.type = 'button';
+        col.dataset.jam = key;
+        col.setAttribute('aria-pressed', String(key === jam));
+        col.setAttribute('aria-label', hourLabel(key) + ': IPU ' + r.ipu + ', ' + r.status);
+        var bar = el('span', 'trend-bar');
+        bar.style.height = Math.max(4, (r.ipu / top) * 100) + '%';
+        setBand(bar, r.ipu);
+        col.append(bar);
+        attachTip(box, col, (function (row) { return function () { return tipLines(row, false); }; })(r));
+      }
+      cols.push(col);
+    }
+    var tip = box.querySelector('.tip');
+    $('trend').replaceChildren.apply($('trend'), cols);
+    if (tip) tip.hidden = true;
+  }
+
+  function drawTake(slotRows, tarikh, jam) {
+    var take = $('take');
+    if (!slotRows.length) { take.textContent = ''; return; }
+    var top = slotRows[0];
+    var low = slotRows[slotRows.length - 1];
+    var over = slotRows.filter(function (r) { return r.ipu > 100; }).length;
+    var b = function (t) { return el('b', null, String(t)); };
+    var parts = [fmtDate(tarikh, true) + ', ' + hourLabel(jam) + ': '];
+    if (over === 0) {
+      parts.push('tiada stesen melepasi IPU 100 daripada ', b(slotRows.length), ' stesen.');
+    } else {
+      parts.push(b(over), ' daripada ', b(slotRows.length), ' stesen melepasi IPU 100, iaitu Tidak Sihat atau lebih teruk.');
+    }
+    if (slotRows.length > 1) {
+      parts.push(' Tertinggi ', b(top.stesen), ' (', b(top.ipu), '), terendah ', b(low.stesen), ' (', b(low.ipu), ').');
+    }
+    take.replaceChildren.apply(take, parts);
+  }
+
+  function drawChart(slotRows) {
+    var chart = $('chart');
+    if (!slotRows.length) { chart.replaceChildren(el('p', 'none', 'Tiada bacaan pada waktu ini.')); return; }
+    var maxVal = slotRows[0].ipu;
+    var top = maxVal <= 300 ? 300 : Math.ceil(maxVal / 100) * 100;
+    var ticks = [0, 50, 100, 200, 300].concat(top > 300 ? [top] : []);
+    var pct = function (v) { return (v / top) * 100 + '%'; };
+    var bars = el('div', 'bars');
+    slotRows.forEach(function (r) {
+      var row = el('div', 'bar-row' + (r.stesen_id === FOCUS ? ' is-focus' : ''));
+      row.tabIndex = 0;
+      setBand(row, r.ipu);
+      row.setAttribute('aria-label', r.stesen + ': IPU ' + r.ipu + ', ' + r.status);
+      var name = el('div');
+      var st = el('span', 'bar-status');
+      st.append(el('span', 'dot'), el('span', null, r.status));
+      name.append(el('span', 'bar-name', r.stesen), st);
+      var track = el('div', 'track');
+      ticks.slice(1).forEach(function (t) {
+        var line = el('span', 'tick');
+        line.style.left = pct(t);
+        track.append(line);
+      });
+      var bar = el('span', 'bar');
+      bar.style.width = pct(r.ipu);
+      track.append(bar);
+      row.append(name, track, el('span', 'bar-val', String(r.ipu)));
+      attachTip(chart, row, function () { return tipLines(r, true); });
+      bars.append(row);
+    });
+    var axis = el('div', 'axis');
+    var axisLine = el('div', 'axis-line');
+    ticks.filter(function (t) { return t !== 50; }).forEach(function (t) {
+      var lab = el('span', 'axis-label', String(t));
+      lab.style.left = pct(t);
+      axisLine.append(lab);
+    });
+    axis.append(el('span'), axisLine, el('span'));
+    var tip = chart.querySelector('.tip');
+    chart.replaceChildren(bars, axis);
+    if (tip) { tip.hidden = true; chart.append(tip); }
+  }
+
+  function drawTable(dayRows) {
+    var seen = {};
+    var stations = dayRows.slice().sort(function (a, b) { return a.stesen < b.stesen ? -1 : a.stesen > b.stesen ? 1 : 0; })
+      .filter(function (r) { if (seen[r.stesen_id]) return false; seen[r.stesen_id] = true; return true; });
+    var trs = stations.map(function (s) {
+      var tr = el('tr');
+      var th = el('th');
+      th.scope = 'row';
+      th.append(el('span', null, s.stesen), el('span', 'place', s.tempat));
+      tr.append(th);
+      SLOTS.forEach(function (slot) {
+        var td = el('td');
+        var r = dayRows.find(function (x) { return x.stesen_id === s.stesen_id && x.jam === slot; });
+        if (r) {
+          var cell = el('span', 'cell');
+          setBand(cell, r.ipu);
+          cell.append(el('span', 'cell-val', String(r.ipu)), el('span', 'cell-status', r.status));
+          td.append(cell);
+        } else {
+          var none = el('span', 'none', '–');
+          none.setAttribute('aria-label', 'Tiada bacaan');
+          td.append(none);
+        }
+        tr.append(td);
+      });
+      return tr;
+    });
+    $('tbody').replaceChildren.apply($('tbody'), trs);
+  }
+
+  function drawShare(slotRows, tarikh, jam) {
+    var box = $('poster');
+    var ok = slotRows.length > 0 && typeof window.ipuPoster === 'function';
+    ['share-img', 'dl-img', 'copy-img', 'copy-text'].forEach(function (id) { $(id).disabled = !ok; });
+    if (!ok) {
+      poster.ready = false;
+      poster.key = '';
+      box.replaceChildren();
+      $('share-text').textContent = '–';
+      return;
+    }
+    var lines = ['*Bacaan IPU Selangor*', fmtDate(tarikh, true) + ', ' + hourLabel(jam), ''];
+    slotRows.forEach(function (r) { lines.push(r.stesen + ': ' + r.ipu + ' (' + r.status + ')'); });
+    lines.push('', 'Sumber: APIMS, Jabatan Alam Sekitar', 'https://eqms.doe.gov.my/APIMS/main');
+    poster.text = lines.join('\n');
+    $('share-text').textContent = poster.text;
+
+    var css = getComputedStyle(document.documentElement);
+    var data = {
+      dateLabel: fmtDate(tarikh, true),
+      slotLabel: hourLabel(jam),
+      rows: slotRows.map(function (r) { return { stesen: r.stesen, ipu: r.ipu, status: r.status }; }),
+      fonts: { sans: css.getPropertyValue('--sans').trim(), serif: css.getPropertyValue('--serif').trim() }
+    };
+    var key = JSON.stringify(data);
+    if (key === poster.key && poster.ready) return;
+    window.ipuPoster(posterCanvas, data);
+    var img = new Image();
+    img.alt = 'Grafik bacaan IPU Selangor, ' + data.dateLabel + ', ' + data.slotLabel + ': ' +
+      slotRows.map(function (r) { return r.stesen + ' ' + r.ipu + ' ' + r.status; }).join('; ');
+    img.src = posterCanvas.toDataURL('image/png');
+    box.replaceChildren(img);
+    poster.key = key;
+    poster.name = 'IPU-Selangor-' + tarikh + '-' + jam.replace(':', '') + '.png';
+    poster.ready = true;
+    $('img-msg').textContent = '';
+  }
+
+  function draw() {
+    var rows = state.rows;
+    var alertBox = $('alert');
+    if (!rows.length) {
+      $('stamp').textContent = state.status === 'error' ? 'Bacaan tidak dapat dimuatkan.' : 'Memuatkan bacaan…';
+      if (state.status === 'error') {
+        alertBox.hidden = false;
+        alertBox.textContent = 'Data tidak dapat dimuatkan. Cuba muat semula laman ini, atau rujuk APIMS untuk bacaan semasa.';
+      }
+      return;
+    }
+    var latest = rows.reduce(function (a, r) { return stamp(r) > stamp(a) ? r : a; }, rows[0]);
+    var dates = rows.map(function (r) { return r.tarikh; }).filter(function (d, i, arr) { return arr.indexOf(d) === i; }).sort().reverse();
+    var tarikh = pick.tarikh && dates.indexOf(pick.tarikh) >= 0 ? pick.tarikh : latest.tarikh;
+    var dayRows = rows.filter(function (r) { return r.tarikh === tarikh; });
+    var hours = dayRows.map(function (r) { return r.jam; }).filter(function (h, i, arr) { return arr.indexOf(h) === i; }).sort();
+    var jam = pick.jam && hours.indexOf(pick.jam) >= 0 ? pick.jam : hours[hours.length - 1];
+    var slotRows = dayRows.filter(function (r) { return r.jam === jam; }).sort(function (a, b) { return b.ipu - a.ipu; });
+
+    $('stamp').textContent = 'Bacaan terkini: ' + fmtDate(latest.tarikh, true) + ', ' + hourLabel(latest.jam);
+    var age = Date.now() - stamp(latest);
+    if (age > STALE_MS) {
+      var link = el('a', null, 'APIMS');
+      link.href = 'https://eqms.doe.gov.my/APIMS/main';
+      link.rel = 'noopener';
+      alertBox.replaceChildren('Bacaan terakhir yang direkod ialah ' + fmtDate(latest.tarikh, true) + ', ' + hourLabel(latest.jam) +
+        ', lebih ' + Math.floor(age / 3600000) + ' jam lepas. Rujuk ', link, ' untuk bacaan semasa.');
+      alertBox.hidden = false;
+    } else {
+      alertBox.hidden = true;
+    }
+
+    var dateSel = $('date');
+    var hourSel = $('hour');
+    if (dateSel !== document.activeElement) {
+      dateSel.replaceChildren.apply(dateSel, dates.map(function (d) { return new Option(fmtDate(d, true), d); }));
+    }
+    dateSel.value = tarikh;
+    if (hourSel !== document.activeElement) {
+      hourSel.replaceChildren.apply(hourSel, hours.slice().reverse().map(function (h) { return new Option(hourLabel(h), h); }));
+    }
+    hourSel.value = jam;
+    $('latest').disabled = tarikh === latest.tarikh && jam === latest.jam;
+
+    drawFocus(rows, tarikh, jam);
+    drawTake(slotRows, tarikh, jam);
+    drawChart(slotRows);
+    drawTable(dayRows);
+    drawShare(slotRows, tarikh, jam);
+  }
+
+  $('date').addEventListener('change', function () { pick.tarikh = $('date').value; pick.jam = null; draw(); });
+  $('hour').addEventListener('change', function () { pick.tarikh = $('date').value; pick.jam = $('hour').value; draw(); });
+  $('latest').addEventListener('click', function () { pick.tarikh = null; pick.jam = null; draw(); });
+  $('trend').addEventListener('click', function (event) {
+    var col = event.target.closest('button[data-jam]');
+    if (!col) return;
+    pick.tarikh = $('date').value;
+    pick.jam = col.dataset.jam;
+    draw();
+  });
+
+  var posterBlob = function () {
+    return new Promise(function (resolve) { posterCanvas.toBlob(resolve, 'image/png'); });
+  };
+  $('share-img').addEventListener('click', function () {
+    if (!poster.ready) return;
+    posterBlob().then(function (blob) {
+      var file = new File([blob], poster.name, { type: 'image/png' });
+      return navigator.share({ files: [file] });
+    }).catch(function (e) {
+      if (e && e.name === 'AbortError') return;
+      $('img-msg').textContent = 'Tak dapat kongsi terus di sini. ' + SAVE_HINT;
+    });
+  });
+  $('dl-img').addEventListener('click', function () {
+    if (!poster.ready) return;
+    posterBlob().then(function (blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = poster.name;
+      document.body.append(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+      $('img-msg').textContent = 'Jika muat turun tidak bermula: ' + SAVE_HINT;
+    });
+  });
+  $('copy-img').addEventListener('click', function () {
+    if (!poster.ready) return;
+    posterBlob().then(function (blob) {
+      return navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    }).then(function () {
+      $('img-msg').textContent = 'Gambar disalin. Tampal dalam WhatsApp.';
+    }).catch(function () {
+      $('img-msg').textContent = 'Tak dapat salin di sini. ' + SAVE_HINT;
+    });
+  });
+  $('copy-text').addEventListener('click', function () {
+    var done = function () { $('text-msg').textContent = 'Disalin.'; };
+    var fallback = function () {
+      var range = document.createRange();
+      range.selectNodeContents($('share-text'));
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      $('text-msg').textContent = 'Teks dipilih. Salin dari sini.';
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(poster.text).then(done).catch(fallback);
+    } else {
+      fallback();
+    }
+  });
+
+  load();
+  setInterval(load, REFRESH_MS);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) load(); });
+  window.addEventListener('resize', function () { if (state.rows.length) draw(); });
+})();
+</script>
+</body>
+</html>

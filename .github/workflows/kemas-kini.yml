@@ -1,0 +1,35 @@
+name: Kemas kini bacaan IPU
+
+on:
+  schedule:
+    # Dua kali sejam (minit 25 dan 50, UTC sama minit dengan waktu Malaysia).
+    # DOE keluarkan bacaan selepas jam penuh; larian kedua menangkap bacaan yang lewat.
+    - cron: "25,50 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kemas-kini-ipu
+  cancel-in-progress: false
+
+jobs:
+  kemas-kini:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tarik bacaan daripada APIMS
+        run: python3 scripts/fetch_ipu.py
+      - name: Simpan jika ada bacaan baharu
+        run: |
+          if git diff --quiet -- data; then
+            echo "Tiada perubahan."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git commit -m "Bacaan IPU $(TZ=Asia/Kuala_Lumpur date '+%Y-%m-%d %H:%M')"
+          git push
