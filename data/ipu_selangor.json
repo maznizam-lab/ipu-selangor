@@ -1,5 +1,5 @@
 {
- "dikemas_kini": "2026-10-27T05:55:50+08:00",
+ "dikemas_kini": "2026-10-27T09:33:44+08:00",
  "rows": [
   {
    "tarikh": "2026-10-09",
@@ -5748,6 +5748,66 @@
    "stesen": "Johan Setia",
    "tempat": "Sekolah Kebangsaan Kampung Johan Setia",
    "ipu": 64,
+   "status": "Sederhana",
+   "pencemar": "PM2.5"
+  },
+  {
+   "tarikh": "2026-10-27",
+   "jam": "09:00",
+   "stesen_id": "CA18B",
+   "stesen": "Kuala Selangor",
+   "tempat": "Sekolah Menengah Sains Kuala Selangor",
+   "ipu": 47,
+   "status": "Baik",
+   "pencemar": "PM2.5"
+  },
+  {
+   "tarikh": "2026-10-27",
+   "jam": "09:00",
+   "stesen_id": "CA19B",
+   "stesen": "Petaling Jaya",
+   "tempat": "Sek. Keb. Bandar Utama",
+   "ipu": 52,
+   "status": "Sederhana",
+   "pencemar": "PM2.5"
+  },
+  {
+   "tarikh": "2026-10-27",
+   "jam": "09:00",
+   "stesen_id": "CA20B",
+   "stesen": "Shah Alam",
+   "tempat": "Sek. Keb. TTDI Jaya",
+   "ipu": 54,
+   "status": "Sederhana",
+   "pencemar": "PM2.5"
+  },
+  {
+   "tarikh": "2026-10-27",
+   "jam": "09:00",
+   "stesen_id": "CA21B",
+   "stesen": "Klang",
+   "tempat": "Klinik Kesihatan Pandamaran",
+   "ipu": 58,
+   "status": "Sederhana",
+   "pencemar": "PM2.5"
+  },
+  {
+   "tarikh": "2026-10-27",
+   "jam": "09:00",
+   "stesen_id": "CA22B",
+   "stesen": "Banting",
+   "tempat": "Kolej Mara Banting",
+   "ipu": 45,
+   "status": "Baik",
+   "pencemar": "PM2.5"
+  },
+  {
+   "tarikh": "2026-10-27",
+   "jam": "09:00",
+   "stesen_id": "MCAQM001",
+   "stesen": "Johan Setia",
+   "tempat": "Sekolah Kebangsaan Kampung Johan Setia",
+   "ipu": 66,
    "status": "Sederhana",
    "pencemar": "PM2.5"
   }
