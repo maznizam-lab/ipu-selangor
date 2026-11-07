@@ -1,5 +1,5 @@
 {
- "dikemas_kini": "2026-11-07T10:07:45+08:00",
+ "dikemas_kini": "2026-11-07T17:00:25+08:00",
  "rows": [
   {
    "tarikh": "2026-10-09",
@@ -8338,6 +8338,16 @@
    "stesen": "Johan Setia",
    "tempat": "Sekolah Kebangsaan Kampung Johan Setia",
    "ipu": 64,
+   "status": "Sederhana",
+   "pencemar": "PM2.5"
+  },
+  {
+   "tarikh": "2026-11-07",
+   "jam": "17:00",
+   "stesen_id": "CA21B",
+   "stesen": "Klang",
+   "tempat": "Klinik Kesihatan Pandamaran",
+   "ipu": 68,
    "status": "Sederhana",
    "pencemar": "PM2.5"
   }
